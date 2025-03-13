@@ -1,0 +1,24 @@
+spin_manifest_version = 2
+
+[application]
+name = "ohttp-relay-prototype"
+version = "0.1.0"
+authors = ["Lann Martin <lann.martin@fermyon.com>"]
+description = "OHTTP relay prototype"
+
+[variables]
+gateway_host = { default = "http://localhost:8080" }
+gateway_path = { default = "/" }
+
+[[trigger.http]]
+route = "/..."
+component = "ohttp-prototype"
+
+[component.ohttp-prototype]
+source = "target/wasm32-wasip1/release/ohttp_relay_prototype.wasm"
+allowed_outbound_hosts = ["{{ gateway_host }}"]
+[component.ohttp-prototype.variables]
+gateway_url = "{{ gateway_host }}{{ gateway_path }}"
+[component.ohttp-prototype.build]
+command = "cargo build --target wasm32-wasip1 --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
